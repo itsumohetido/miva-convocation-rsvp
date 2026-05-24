@@ -449,8 +449,7 @@ footer a:hover { text-decoration: underline; }
 // ════════════════════════════════════════════════════════
 // CONFIG & STATE
 // ════════════════════════════════════════════════════════
-const SHEET_ID = '150u6Sm1OASOsQ_6_l8CyLt_q_IIyPT_wQZKcU9c10sU';
-const SHEET_NAME = 'Updated RSVP Data 2.0';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyBzKjKrS8yqqUKvpqaemp1vueBUeZCwVX7AXucfgiND7na__OwsneDMLoGnHV25pf9/exec';
 const PAGE_SIZE = 20;
 
 let allRows = [], filtered = [], tableRows = [];
@@ -463,24 +462,22 @@ let filterType = '', filterAttendance = '', filterStatus = '';
 async function fetchAndRender() {
   try {
     updateLoader(0, 'Fetching data...');
-    const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/query?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}`;
-    const resp = await fetch(url);
+    const resp = await fetch(APPS_SCRIPT_URL);
     updateLoader(30, 'Parsing...');
-    
-    const text = await resp.text();
-    const json = JSON.parse(text.substring(47).slice(0, -2));
-    
-    if(json.isError) throw new Error(json.errors[0]);
-    
+
+    const json = await resp.json();
+
+    if(json.error) throw new Error(json.error);
+
     updateLoader(60, 'Processing...');
     parseData(json);
     updateLoader(85, 'Rendering...');
-    
+
     applyFilters();
     renderMetrics();
     renderCharts();
     renderTable();
-    
+
     updateLoader(100, 'Done');
     setTimeout(() => {
       document.getElementById('loading-screen').classList.add('hidden');
@@ -493,11 +490,12 @@ async function fetchAndRender() {
 }
 
 function parseData(json) {
-  const cols = json.table.cols.map(c => c.label);
-  allRows = json.table.rows.map(row => {
+  // Apps Script returns a plain JSON array of row objects
+  // Normalise keys to lowercase_underscore to match existing field references
+  allRows = (json.data || json).map(row => {
     const obj = {};
-    cols.forEach((col, i) => {
-      obj[col.toLowerCase().replace(/\s+/g, '_')] = row.c[i]?.v || '';
+    Object.entries(row).forEach(([k, v]) => {
+      obj[k.toLowerCase().replace(/\s+/g, '_')] = v ?? '';
     });
     return obj;
   });
