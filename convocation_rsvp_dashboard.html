@@ -490,12 +490,13 @@ async function fetchAndRender() {
 }
 
 function parseData(json) {
-  // Apps Script returns a plain JSON array of row objects
-  // Normalise keys to lowercase_underscore to match existing field references
-  allRows = (json.data || json).map(row => {
+  // Apps Script returns { rows: [...], headers: [...], row_count, timestamp, sheet_name }
+  // Keys are already lowercased + underscored by the Apps Script, so no transform needed
+  const rawRows = json.rows || json.data || (Array.isArray(json) ? json : []);
+  allRows = rawRows.map(row => {
     const obj = {};
     Object.entries(row).forEach(([k, v]) => {
-      obj[k.toLowerCase().replace(/\s+/g, '_')] = v ?? '';
+      obj[k] = v ?? '';
     });
     return obj;
   });
