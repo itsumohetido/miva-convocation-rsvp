@@ -897,7 +897,7 @@ function renderCharts() {
   // Remove Lagos (they're already there, this is commuting TO Lagos)
   delete commuteCleaned['Lagos'];
 
-  // Build final list: Abuja first, then top 3 non-Abuja Nigerian states, then Other Nigerian States, then Outside Nigeria
+  // Build final list: Abuja first, then top 3 non-Abuja Nigerian states, then Other States, then Outside Nigeria
   const abujaCount = commuteCleaned['Abuja'] || 0;
   const outsideCount = commuteCleaned['Outside Nigeria'] || 0;
   const nigerianStates = Object.entries(commuteCleaned)
@@ -909,7 +909,7 @@ function renderCharts() {
   const commuteItems = [
     ...(abujaCount ? [{ l: 'Abuja', v: abujaCount }] : []),
     ...top3.map(([l, v]) => ({ l, v })),
-    ...(otherCount ? [{ l: 'Other Nigerian States', v: otherCount }] : []),
+    ...(otherCount ? [{ l: 'Other States', v: otherCount }] : []),
     ...(outsideCount ? [{ l: 'Outside Nigeria', v: outsideCount }] : [])
   ];
   bars('c-commute-from', commuteItems.length ? commuteItems : [{l:'No data',v:0}], 'var(--gold-light)');
