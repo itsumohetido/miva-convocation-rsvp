@@ -454,6 +454,10 @@ footer a:hover { text-decoration: underline; }
         <div class="chart-card">
           <div class="chart-title">Commute Origin to Lagos</div>
           <div class="bar-chart" id="c-commute-from"></div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px; padding-top:10px; border-top:1px solid var(--border);">
+            <span style="font-family:var(--mono); font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em;">Total Commuters</span>
+            <span id="c-commute-total" style="font-family:var(--mono); font-size:16px; font-weight:700; color:var(--gold);">0</span>
+          </div>
         </div>
       </div>
     </div>
@@ -897,7 +901,7 @@ function renderCharts() {
   // Remove Lagos (they're already there, this is commuting TO Lagos)
   delete commuteCleaned['Lagos'];
 
-  // Build final list: Abuja first, then top 3 non-Abuja Nigerian states, then Other States, then Outside Nigeria
+  // Build final list: Abuja first, then top 3 non-Abuja Nigerian states, then Other Nigerian States, then Outside Nigeria
   const abujaCount = commuteCleaned['Abuja'] || 0;
   const outsideCount = commuteCleaned['Outside Nigeria'] || 0;
   const nigerianStates = Object.entries(commuteCleaned)
@@ -912,7 +916,14 @@ function renderCharts() {
     ...(otherCount ? [{ l: 'Other States', v: otherCount }] : []),
     ...(outsideCount ? [{ l: 'Outside Nigeria', v: outsideCount }] : [])
   ];
+  const commuteTotal = commuteItems.reduce((s, i) => s + i.v, 0);
   bars('c-commute-from', commuteItems.length ? commuteItems : [{l:'No data',v:0}], 'var(--gold-light)');
+
+  // Total summary row
+  const commuteTotalEl = document.getElementById('c-commute-total');
+  if (commuteTotalEl) {
+    commuteTotalEl.textContent = commuteTotal.toLocaleString();
+  }
 }
 
 // ════════════════════════════════════════════════════════
