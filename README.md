@@ -2,10 +2,8 @@
 
    Real-time RSVP analytics for Miva Convocation 2026.
 
-   ## Quick Links
+   ## View Dashboard
    - 📊 [View Dashboard](convocation_rsvp_dashboard.html)
-   - 📋 [RSVP Form](https://docs.google.com/forms/YOUR-FORM-ID)
-   - 📑 [Data Sheet](https://docs.google.com/spreadsheets/d/150u6Sm1OASOsQ_6_l8CyLt_q_IIyPT_wQZKcU9c10sU/)
 
    ## Features
    - Real-time RSVP analytics
